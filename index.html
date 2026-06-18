@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Merci Dorra - Geovelo</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="page-wrap">
+            <section class="hero">
+                <div class="hero-deco deco-1"></div>
+                <div class="hero-deco deco-2"></div>
+                <div class="hero-deco deco-3"></div>
+                <div class="hero-deco deco-4"></div>
+                <div class="hero-deco deco-5"></div>
+                <div class="hero-badge">Fin de stage | Geovelo</div>
+                <h1>Merci Dorra !!!</h1>
+                <p>Pour ce stage vraiment exeptionnel a Geovelo, je te remercie pour ta patience à me faire un programme de qualité <br>et de m'avoir pris en stage pour cette semaine, j'aurais pas pu avoir mieux !!!!<br><span class="ps-note">PS : Le texte n'es pas de l'IA mais une partie du site si.</span></p>
+                <button id="confettiBtn">Lancer les confettis 🎉</button>
+            </section>
+            <section class="road">
+                <div class="bike-track"></div>
+                <div class="bike">
+                    <div class="wheel wheel-back"></div>
+                    <div class="wheel wheel-front"></div>
+                    <div class="frame"></div>
+                    <div class="seat"></div>
+                    <div class="handlebar"></div>
+                    <div class="chain"></div>
+                    <div class="pedal pedal-left"></div>
+                    <div class="pedal pedal-right"></div>
+                    <div class="headlight"></div>
+                </div>
+                <div class="geovelo-label">Geovelo</div>
+            </section>
+        </div>
+
+        <canvas id="confettiCanvas"></canvas>
+
+        <script>
+            const confettiBtn = document.getElementById('confettiBtn');
+            const canvas = document.getElementById('confettiCanvas');
+            const ctx = canvas.getContext('2d');
+            let confettiPieces = [];
+            let confettiAnimation = null;
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            function createConfetti() {
+                const colors = ['#ffd200', '#2ce2b3', '#0c7f72', '#ffffff', '#7df7ca'];
+                for (let i = 0; i < 120; i++) {
+                    confettiPieces.push({
+                        x: Math.random() * canvas.width,
+                        y: canvas.height + Math.random() * 100,
+                        size: 6 + Math.random() * 8,
+                        gravity: 0.35 + Math.random() * 0.5,
+                        rotation: Math.random() * 360,
+                        speedX: -3 + Math.random() * 6,
+                        speedY: -11 - Math.random() * 6,
+                        color: colors[Math.floor(Math.random() * colors.length)],
+                    });
+                }
+            }
+
+            function drawConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                confettiPieces.forEach((piece, index) => {
+                    piece.x += piece.speedX;
+                    piece.y += piece.speedY;
+                    piece.speedY += piece.gravity * 0.12;
+                    piece.rotation += 7;
+
+                    ctx.save();
+                    ctx.translate(piece.x, piece.y);
+                    ctx.rotate((piece.rotation * Math.PI) / 180);
+                    ctx.fillStyle = piece.color;
+                    ctx.fillRect(-piece.size / 2, -piece.size / 2, piece.size, piece.size * 0.45);
+                    ctx.restore();
+
+                    if (piece.y > canvas.height + 20 || piece.x < -20 || piece.x > canvas.width + 20) {
+                        confettiPieces.splice(index, 1);
+                    }
+                });
+
+                if (confettiPieces.length > 0) {
+                    confettiAnimation = requestAnimationFrame(drawConfetti);
+                } else {
+                    cancelAnimationFrame(confettiAnimation);
+                }
+            }
+
+            confettiBtn.addEventListener('click', () => {
+                createConfetti();
+                if (!confettiAnimation) {
+                    drawConfetti();
+                }
+            });
+        </script>
+    </body>
+</html>
+
+            
